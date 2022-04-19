@@ -1,12 +1,12 @@
 import sys  # sys нужен для передачи argv в QApplication
 import random
+import time
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog, QMessageBox
 from PyQt5 import uic
 
 
 name = ''
 answer = ''
-
 
 class LoginWindow(QDialog):
     def __init__(self):
@@ -41,10 +41,15 @@ class MainWindow(QDialog):
         uic.loadUi('MainView.ui', self)
         self.backBtn.clicked.connect(self.exit)
         self.oneBtn.clicked.connect(self.one)
+        self.twobtn.clicked.connect(self.two)
 
     def one(self):
         self.close()
         self.Menu = OneWindow()
+        self.Menu.show()
+    def two(self):
+        self.close()
+        self.Menu = TwoWindow()
         self.Menu.show()
 
     def exit(self):
@@ -55,13 +60,13 @@ class OneWindow(QDialog):
     def __init__(self):
         super().__init__()
         uic.loadUi('One.ui', self)
-
+        # add score
         global answer
 
         self.backBtn.clicked.connect(self.exit)
 
         self.answerOneOne.clicked.connect(self.check)
-        self.answerOnTwo.clicked.connect(self.check)
+        self.answerOneTwo.clicked.connect(self.check)
         self.answerOneThree.clicked.connect(self.check)
 
         self.answerTwoOne.clicked.connect(self.check)
@@ -88,11 +93,6 @@ class OneWindow(QDialog):
             self.gridLayout.itemAt(q).widget().setText(answers)
 
 
-
-
-
-
-
     def check(self):
         global answer
         if (self.sender().text()=='НИР'):
@@ -107,14 +107,38 @@ class OneWindow(QDialog):
         self.Menu.show()
 
 
+class TwoWindow(QDialog):
+    global timer
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('Two.ui', self)
+
+
+        self.backBtn.clicked.connect(self.exit)
+        self.stBtn.clicked.connect(self.start)
+        self.list.addItem('test')
+
+
+    def start(self):
+        pass
+
+
+
+
+    def exit(self):
+        self.close()
+        self.Menu = MainWindow()
+        self.Menu.show()
+
+
 def main():
     app = QApplication(sys.argv)
-    window = LoginWindow()  # Создаём объект класса ExampleApp
-    window.show()  # Показываем окно
-    app.exec_()  # и запускаем приложение
+    window = LoginWindow()
+    window.show()
+    app.exec_()
 
 
 
 
-if __name__ == '__main__':  # Если мы запускаем файл напрямую, а не импортируем
-    main()  # то запускаем функцию main()
+if __name__ == '__main__':
+    main()
