@@ -1,5 +1,6 @@
 import sys
 import random
+import massiv
 
 from PyQt5.QtCore import QTimer
 from PyQt5 import QtCore
@@ -8,7 +9,6 @@ from PyQt5 import uic, QtTest
 
 name = ''
 answer = ''
-
 
 class LoginWindow(QDialog):
     def __init__(self):
@@ -74,14 +74,18 @@ class OneWindow(QDialog):
         self.answerThreeTwo.clicked.connect(self.check)
         self.answerThreeThree.clicked.connect(self.check)
 
-        self.label.setText('НЕР')
+
         self.label.adjustSize()
-
-        btns = ['НАГ', 'РАГ', 'ДЕР',
-                'НИЖ', 'ФЕЙ', 'РОП',
-                'НИР', 'ШОР', 'МЕР']
-
+        mm=massiv.mm
+        print(mm)
+        btns = []
+        for i in range(9):
+            item = (random.choice(mm))
+            btns.append(item)
+        print(btns)
         answer = (random.choice(btns))
+        print(answer)
+        self.label.setText(str(answer))
 
         for q in range(9):
             answers = (random.choice(btns))
@@ -90,8 +94,11 @@ class OneWindow(QDialog):
 
     def check(self):
         global answer
-        if self.sender().text()=='НИР':
+        if self.sender().text()==answer:
             print("Sucessfull")
+
+
+
         # if (self.sender().text()==answer):
 
     def exit(self):
