@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>фыв</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
   <widget class="QPushButton" name="backBtn">
    <property name="geometry">
     <rect>
@@ -30,9 +33,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>110</y>
      <width>271</width>
-     <height>371</height>
+     <height>201</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -45,7 +48,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>One</string>
+       <string>Найти </string>
       </property>
      </widget>
     </item>
@@ -58,7 +61,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>Two</string>
+       <string>Чтение текста на время</string>
       </property>
      </widget>
     </item>
@@ -71,20 +74,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>Three</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="fourBtn">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Four</string>
+       <string>*Скорочтение</string>
       </property>
      </widget>
     </item>

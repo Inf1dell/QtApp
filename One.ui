@@ -173,6 +173,19 @@
     <string>Back</string>
    </property>
   </widget>
+  <widget class="QLabel" name="labelScore">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>10</y>
+     <width>47</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Очков: 00</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

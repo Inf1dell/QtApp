@@ -14,13 +14,13 @@ class LoginWindow(QDialog):
     def __init__(self):
         super().__init__()
         uic.loadUi('LoginView.ui', self)
-
         self.loginBtn.clicked.connect(self.login)
+        self.nameEdit.returnPressed.connect(self.loginBtn.click)
         self.exitBtn.clicked.connect(self.exit)
 
     def login(self):
         global name
-        text = self.nameEdit.toPlainText()
+        text = self.nameEdit.text()
         print(text)
         if text != '' and text != ' ':
             name = text
@@ -74,8 +74,14 @@ class OneWindow(QDialog):
         self.answerThreeTwo.clicked.connect(self.check)
         self.answerThreeThree.clicked.connect(self.check)
 
-
         self.label.adjustSize()
+        self.labelScore.adjustSize()
+
+        self.answer = ''
+        self.score = 0
+        self.start()
+
+    def start(self):
         mm=massiv.mm
         print(mm)
         btns = []
@@ -83,23 +89,35 @@ class OneWindow(QDialog):
             item = (random.choice(mm))
             btns.append(item)
         print(btns)
-        answer = (random.choice(btns))
-        print(answer)
-        self.label.setText(str(answer))
+        self.answer = (random.choice(btns))
+        print(self.answer)
+        self.label.setText(str(self.answer))
 
         for q in range(9):
-            answers = (random.choice(btns))
-            btns.remove(answers)
-            self.gridLayout.itemAt(q).widget().setText(answers)
+            self.answers = (random.choice(btns))
+            btns.remove(self.answers)
+            self.gridLayout.itemAt(q).widget().setText(self.answers)
 
     def check(self):
-        global answer
-        if self.sender().text()==answer:
+        if self.sender().text()==self.answer:
             print("Sucessfull")
+            self.score+=5
+            self.labelScore.setText("Очков: " + str(self.score))
+            self.start()
+        else:
+            print("Error")
+            self.score -= 1
+            self.labelScore.setText("Очков: " + str(self.score))
+            self.start()
 
-
-
-        # if (self.sender().text()==answer):
+        if self.score < 0:
+            self.close()
+            self.Menu = Lose()
+            self.Menu.show()
+        elif self.score >= 25:
+            self.close()
+            self.Menu = Win()
+            self.Menu.show()
 
     def exit(self):
         self.close()
@@ -161,6 +179,34 @@ class TwoWindow(QDialog):
         self.label.setText('Время: 00:00')
 
     def exit(self):
+        self.close()
+        self.Menu = MainWindow()
+        self.Menu.show()
+
+
+class Win(QDialog):
+
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('Win.ui', self)
+
+        self.backBtn.clicked.connect(self.back)
+
+    def back(self):
+        self.close()
+        self.Menu = MainWindow()
+        self.Menu.show()
+
+
+class Lose(QDialog):
+
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('Lose.ui', self)
+
+        self.backBtn.clicked.connect(self.back)
+
+    def back(self):
         self.close()
         self.Menu = MainWindow()
         self.Menu.show()
