@@ -1,5 +1,9 @@
+import math
 import sys
 import random
+import threading
+import time
+
 import massiv
 
 from PyQt5.QtCore import QTimer
@@ -37,7 +41,8 @@ class MainWindow(QDialog):
         uic.loadUi('MainView.ui', self)
         self.backBtn.clicked.connect(self.exit)
         self.oneBtn.clicked.connect(self.one)
-        self.twobtn.clicked.connect(self.two)
+        self.twoBtn.clicked.connect(self.two)
+        self.threeBtn.clicked.connect(self.three)
 
     def one(self):
         self.close()
@@ -47,6 +52,11 @@ class MainWindow(QDialog):
     def two(self):
         self.close()
         self.Menu = TwoWindow()
+        self.Menu.show()
+
+    def three(self):
+        self.close()
+        self.Menu = ThreeWindow()
         self.Menu.show()
 
     def exit(self):
@@ -132,14 +142,82 @@ class TwoWindow(QDialog):
         super().__init__()
         uic.loadUi('Two.ui', self)
 
-        self.list.addItem('test test test test test test test test test test test test ')
-
-        self.list.setAutoScroll(True)
-        self.list.setWordWrap(True)
-        self.list.scrollToBottom()
+        self.text = massiv.text2_2
+        self.label_2.setText("Нажмите Start что-бы начать")
+        self.word = 1
+        for i in self.text:
+            if(i==" "):
+                self.word += 1
 
         self.backBtn.clicked.connect(self.exit)
         self.resetBtn.clicked.connect(self.reset)
+
+        self.Osec = 0
+        self.sec = 0  # 2
+        self.min = 0  # 2
+
+        self.timer = QTimer(self)  # 3
+        self.timer.timeout.connect(self.update_func)
+
+        self.stBtn.clicked.connect(self.start_stop_func)
+
+    def start_stop_func(self):
+        if not self.timer.isActive():
+            self.stBtn.setText('Stop')
+            self.timer.start(1000)
+            self.label_2.setText(str(self.text))
+        else:
+            self.stBtn.setText('Start')
+            self.timer.stop()
+            V = self.word / (self.Osec/60)
+            print(self.word)
+            self.label_2.setText(str(math.ceil(V))+" слов/минут")
+
+
+    def update_func(self):
+        self.Osec += 1
+
+        self.sec += 1
+        if self.sec >+ 60:
+            self.min += 1
+            self.sec = 0
+        if self.min < 10:
+            if self.sec < 10:
+                self.label.setText('Время: 0'+str(self.min)+':0'+str(self.sec))
+            else:
+                self.label.setText('Время: 0'+str(self.min)+':'+str(self.sec))
+        else:
+            if self.sec < 10:
+                self.label.setText('Время: ' + str(self.min) + ':0' + str(self.sec))
+            else:
+                self.label.setText('Время: ' + str(self.min) + ':' + str(self.sec))
+
+    def reset(self):
+        self.Osec = 0
+
+        self.sec = 0
+        self.min = 0
+        self.label.setText('Время: 00:00')
+
+    def exit(self):
+        self.close()
+        self.Menu = MainWindow()
+        self.Menu.show()
+
+
+class ThreeWindow(QDialog):
+    global timer
+
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('Three.ui', self)
+
+        self.backBtn.clicked.connect(self.exit)
+        self.resetBtn.clicked.connect(self.reset)
+
+        self.text = massiv.text1_3
+        self.tt=''
+        self.t = threading.Thread(target=self.loop, args=())
 
         self.sec = 0  # 2
         self.min = 0  # 2
@@ -153,9 +231,11 @@ class TwoWindow(QDialog):
         if not self.timer.isActive():
             self.stBtn.setText('Stop')
             self.timer.start(1000)
+            self.t.start()
         else:
             self.stBtn.setText('Start')
             self.timer.stop()
+
 
     def update_func(self):
         self.sec += 1
@@ -172,6 +252,16 @@ class TwoWindow(QDialog):
                 self.label.setText('Время: ' + str(self.min) + ':0' + str(self.sec))
             else:
                 self.label.setText('Время: ' + str(self.min) + ':' + str(self.sec))
+
+    def loop(self):
+        for i in self.text:
+            if (i=="*"):
+                self.start_stop_func()
+            else:
+                time.sleep(0.05)
+                print(i)
+                self.tt+=i
+                self.label_2.setText(str(self.tt))
 
     def reset(self):
         self.sec = 0
