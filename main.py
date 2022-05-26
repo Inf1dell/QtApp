@@ -150,7 +150,6 @@ class TwoWindow(QDialog):
                 self.word += 1
 
         self.backBtn.clicked.connect(self.exit)
-        self.resetBtn.clicked.connect(self.reset)
 
         self.Osec = 0
         self.sec = 0  # 2
@@ -164,6 +163,10 @@ class TwoWindow(QDialog):
     def start_stop_func(self):
         if not self.timer.isActive():
             self.stBtn.setText('Stop')
+            self.Osec = 0
+            self.sec = 0
+            self.min = 0
+            self.label.setText('Время: 00:00')
             self.timer.start(1000)
             self.label_2.setText(str(self.text))
         else:
@@ -192,13 +195,6 @@ class TwoWindow(QDialog):
             else:
                 self.label.setText('Время: ' + str(self.min) + ':' + str(self.sec))
 
-    def reset(self):
-        self.Osec = 0
-
-        self.sec = 0
-        self.min = 0
-        self.label.setText('Время: 00:00')
-
     def exit(self):
         self.close()
         self.Menu = MainWindow()
@@ -213,11 +209,10 @@ class ThreeWindow(QDialog):
         uic.loadUi('Three.ui', self)
 
         self.backBtn.clicked.connect(self.exit)
-        self.resetBtn.clicked.connect(self.reset)
 
         self.text = massiv.text1_3
-        self.tt=''
-        self.t = threading.Thread(target=self.loop, args=())
+        self.label_2.setText("Нажмите Start что-бы начать")
+
 
         self.sec = 0  # 2
         self.min = 0  # 2
@@ -230,10 +225,17 @@ class ThreeWindow(QDialog):
     def start_stop_func(self):
         if not self.timer.isActive():
             self.stBtn.setText('Stop')
+            self.stBtn.setEnabled(False)
+            self.sec = 0
+            self.min = 0
+            self.label.setText('Время: 00:00')
             self.timer.start(1000)
-            self.t.start()
+            self.label_2.setText("")
+            t = threading.Thread(target=self.loop, args=())
+            t.start()
         else:
             self.stBtn.setText('Start')
+            self.stBtn.setEnabled(True)
             self.timer.stop()
 
 
@@ -254,19 +256,16 @@ class ThreeWindow(QDialog):
                 self.label.setText('Время: ' + str(self.min) + ':' + str(self.sec))
 
     def loop(self):
+        tt=''
         for i in self.text:
             if (i=="*"):
                 self.start_stop_func()
             else:
                 time.sleep(0.05)
                 print(i)
-                self.tt+=i
-                self.label_2.setText(str(self.tt))
+                tt+=i
+                self.label_2.setText(str(tt))
 
-    def reset(self):
-        self.sec = 0
-        self.min = 0
-        self.label.setText('Время: 00:00')
 
     def exit(self):
         self.close()
