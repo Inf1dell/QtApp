@@ -4,11 +4,18 @@ import random
 import threading
 import time
 
+from PyQt5.uic.properties import QtWidgets
+
+import tasks
+import tasks_five
+
+from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap
+
 import massiv
 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QSize
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtWidgets import QApplication, QDialog, QHBoxLayout, QLabel
 from PyQt5 import uic, QtTest
 
 name = ''
@@ -22,10 +29,15 @@ class LoginWindow(QDialog):
         self.nameEdit.returnPressed.connect(self.loginBtn.click)
         self.exitBtn.clicked.connect(self.exit)
 
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 240))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
     def login(self):
         global name
         text = self.nameEdit.text()
-        print(text)
         if text != '' and text != ' ':
             name = text
             self.close()
@@ -43,6 +55,14 @@ class MainWindow(QDialog):
         self.oneBtn.clicked.connect(self.one)
         self.twoBtn.clicked.connect(self.two)
         self.threeBtn.clicked.connect(self.three)
+        self.fourBtn.clicked.connect(self.four)
+        self.fiveBtn.clicked.connect(self.five)
+
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 240))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
 
     def one(self):
         self.close()
@@ -57,6 +77,16 @@ class MainWindow(QDialog):
     def three(self):
         self.close()
         self.Menu = ThreeWindow()
+        self.Menu.show()
+
+    def four(self):
+        self.close()
+        self.Menu = FourWindow()
+        self.Menu.show()
+
+    def five(self):
+        self.close()
+        self.Menu = FiveWindow()
         self.Menu.show()
 
     def exit(self):
@@ -88,19 +118,22 @@ class OneWindow(QDialog):
         self.labelScore.adjustSize()
 
         self.answer = ''
-        self.score = 0
+        self.score = 10
         self.start()
+
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 240))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
 
     def start(self):
         mm=massiv.mm
-        print(mm)
         btns = []
         for i in range(9):
             item = (random.choice(mm))
             btns.append(item)
-        print(btns)
         self.answer = (random.choice(btns))
-        print(self.answer)
         self.label.setText(str(self.answer))
 
         for q in range(9):
@@ -110,13 +143,15 @@ class OneWindow(QDialog):
 
     def check(self):
         if self.sender().text()==self.answer:
-            print("Sucessfull")
+            self.labelScore.setStyleSheet("color: green;"
+                                          "background-color: rgb(255, 255, 255);")
             self.score+=5
             self.labelScore.setText("Очков: " + str(self.score))
             self.start()
         else:
-            print("Error")
-            self.score -= 1
+            self.labelScore.setStyleSheet("color: red;"
+                                          "background-color: rgb(255, 255, 255);")
+            self.score -= 4
             self.labelScore.setText("Очков: " + str(self.score))
             self.start()
 
@@ -160,6 +195,12 @@ class TwoWindow(QDialog):
 
         self.stBtn.clicked.connect(self.start_stop_func)
 
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 240))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
     def start_stop_func(self):
         if not self.timer.isActive():
             self.stBtn.setText('Stop')
@@ -173,7 +214,6 @@ class TwoWindow(QDialog):
             self.stBtn.setText('Start')
             self.timer.stop()
             V = self.word / (self.Osec/60)
-            print(self.word)
             self.label_2.setText(str(math.ceil(V))+" слов/минут")
 
 
@@ -222,6 +262,12 @@ class ThreeWindow(QDialog):
 
         self.stBtn.clicked.connect(self.start_stop_func)
 
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 240))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
     def start_stop_func(self):
         if not self.timer.isActive():
             self.stBtn.setText('Stop')
@@ -262,9 +308,130 @@ class ThreeWindow(QDialog):
                 self.start_stop_func()
             else:
                 time.sleep(0.05)
-                print(i)
                 tt+=i
                 self.label_2.setText(str(tt))
+
+
+    def exit(self):
+        self.close()
+        self.Menu = MainWindow()
+        self.Menu.show()
+
+class FourWindow(QDialog):
+    global timer
+
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('Four.ui', self)
+
+        self.backBtn.clicked.connect(self.exit)
+        self.checkBtn.clicked.connect(self.check)
+        self.reBtn.clicked.connect(self.getAset)
+        self.score=10
+        self.getAset()
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 240))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
+
+
+    def getAset(self):
+        self.label_four.setText('')
+        r = random.randint(1, len(tasks.ques))
+        self.corS = tasks.correct.get(r)
+        self.textS = tasks.ques.get(r) + "\n" + "\n"
+
+        for i in range(len(tasks.ans.get(r))):
+            self.textS += tasks.ans.get(r)[i] + " " * 4
+
+        self.label_four.setText(self.textS)
+
+    def check(self):
+        if(self.ansEdit.text() == self.corS):
+            self.labelScore.setStyleSheet("color: green;"
+                                          "background-color: rgb(255, 255, 255);")
+            self.score+=5
+            self.labelScore.setText("Очков: " + str(self.score))
+            self.ansEdit.setText(" ")
+            self.getAset()
+        else:
+            self.labelScore.setStyleSheet("color: red;"
+                                          "background-color: rgb(255, 255, 255);")
+            self.score -= 1
+            self.labelScore.setText("Очков: " + str(self.score))
+
+        if self.score < 0:
+            self.close()
+            self.Menu = Lose()
+            self.Menu.show()
+        elif self.score >= 25:
+            self.close()
+            self.Menu = Win()
+            self.Menu.show()
+
+
+    def exit(self):
+        self.close()
+        self.Menu = MainWindow()
+        self.Menu.show()
+
+
+class FiveWindow(QDialog):
+    global timer
+
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('Four.ui', self)
+
+        self.backBtn.clicked.connect(self.exit)
+        self.checkBtn.clicked.connect(self.check)
+        self.reBtn.clicked.connect(self.getAset)
+        self.score=10
+        self.r=0
+        self.getAset()
+
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 240))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
+
+
+    def getAset(self):
+        self.label_four.setText('')
+        self.r = random.randint(1, len(tasks_five.ques))
+        self.corS = tasks_five.correct.get(self.r)
+        self.textS = tasks_five.ques.get(self.r) + "\n" + "\n"
+
+        self.label_four.setText(self.textS)
+
+    def check(self):
+        if(self.ansEdit.text() == self.corS):
+            self.labelScore.setStyleSheet("color: green;"
+                                          "background-color: rgb(255, 255, 255);")
+            self.score+=5
+            self.labelScore.setText("Очков: " + str(self.score))
+            self.ansEdit.setText(" ")
+            self.getAset()
+        else:
+            self.labelScore.setStyleSheet("color: red;"
+                                          "background-color: rgb(255, 255, 255);")
+            self.score -= 1
+            self.labelScore.setText("Очков: " + str(self.score))
+
+            self.label_four.setText(self.textS+tasks_five.hint.get(self.r))
+
+        if self.score < 0:
+            self.close()
+            self.Menu = Lose()
+            self.Menu.show()
+        elif self.score >= 25:
+            self.close()
+            self.Menu = Win()
+            self.Menu.show()
 
 
     def exit(self):
@@ -281,10 +448,19 @@ class Win(QDialog):
 
         self.backBtn.clicked.connect(self.back)
 
+
+
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 480))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
     def back(self):
         self.close()
         self.Menu = MainWindow()
         self.Menu.show()
+
 
 
 class Lose(QDialog):
@@ -295,10 +471,19 @@ class Lose(QDialog):
 
         self.backBtn.clicked.connect(self.back)
 
+        oImage = QImage("image.jpg")
+        sImage = oImage.scaled(QSize(320, 480))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
+
+
     def back(self):
         self.close()
         self.Menu = MainWindow()
         self.Menu.show()
+
 
 
 def main():

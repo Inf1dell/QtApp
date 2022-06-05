@@ -30,8 +30,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>287</width>
-      <height>307</height>
+      <width>289</width>
+      <height>309</height>
      </rect>
     </property>
     <widget class="QLabel" name="label_2">
@@ -53,6 +53,9 @@
       <font>
        <pointsize>10</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string/>
@@ -101,15 +104,15 @@
     </rect>
    </property>
    <property name="text">
-    <string>Back</string>
+    <string>Назад</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>190</x>
+     <x>180</x>
      <y>10</y>
-     <width>101</width>
+     <width>111</width>
      <height>20</height>
     </rect>
    </property>
@@ -118,8 +121,14 @@
      <pointsize>12</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
     <string>Время: 00:00</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>
